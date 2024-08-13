@@ -1,6 +1,7 @@
 package com.cos.security.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +16,9 @@ public class IndexController {
 	@Autowired
 	private UserRepository userRepository;
 
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
+	
 	@GetMapping({"","/"})
 	public String index() {
 		return "index";
@@ -53,11 +57,13 @@ public class IndexController {
 	}
 	
 	@PostMapping("/join")
-	public @ResponseBody String join(User user) {
+	public String join(User user) {
 		System.out.println(user);
 		user.setRole("ROLE_USER");
 		// password 암호화가 없으면 security 로그인을 할 수 없음
+		String encryptPassword = bCryptPasswordEncoder.encode(user.getPassword());
+		user.setPassword(encryptPassword);
 		userRepository.save(user);
-		return "join";
+		return "redirect:/loginForm";
 	}
 }
