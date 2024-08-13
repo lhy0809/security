@@ -42,7 +42,7 @@ public class SecurityConfig /*extends WebSecurityConfigurerAdapter 구 버전에
 				);
 
 		http.formLogin(form -> form
-				.loginPage("/login"));
+				.loginPage("/loginForm"));
 		// /user /manager /admin 으로 접근 시 403 error 발생 
 		// 단, formLogin.loginPage 를 지정하면 권한이 필요한 url에 대해서 /login 으로 이동.
 		return http.build();
