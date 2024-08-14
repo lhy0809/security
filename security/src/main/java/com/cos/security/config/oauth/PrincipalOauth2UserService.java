@@ -8,6 +8,9 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import com.cos.security.config.auth.PrincipalDetails;
+import com.cos.security.config.oauth.provider.FacebookUserInfo;
+import com.cos.security.config.oauth.provider.GoogleUserInfo;
+import com.cos.security.config.oauth.provider.OAuth2UserInfo;
 import com.cos.security.model.User;
 import com.cos.security.repository.UserRepository;
 
@@ -32,12 +35,22 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService{
 		System.out.println("userRequest Attributes : " + super.loadUser(userRequest).getAttributes()); // Map으로 나옵니다.
 		OAuth2User oauth2User = super.loadUser(userRequest);
 		
+		OAuth2UserInfo oauth2UserInfo = null;
 		String provider = userRequest.getClientRegistration().getClientName(); // google
-		String providerId = oauth2User.getAttribute("sub");
+		
+		if(provider.equalsIgnoreCase("google")) {
+			oauth2UserInfo = new GoogleUserInfo(oauth2User.getAttributes());
+		}else if(provider.equalsIgnoreCase("facebook")) {
+			oauth2UserInfo = new FacebookUserInfo(oauth2User.getAttributes());
+		}else {
+			System.out.println("ㅎㅎㅎ");
+		}
+		
+		String providerId = oauth2UserInfo.getProviderId();
 		String username = provider+"_"+providerId;
 //		String password = bCryptPasswordEncoder.encode("security");
 		String role = "ROLE_USER";
-		String email = oauth2User.getAttribute("email");
+		String email = oauth2UserInfo.getEmail();
 		
 		User userEntity = userRepository.findByUsername(username);
 		if(userEntity == null) {
