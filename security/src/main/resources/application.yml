@@ -13,6 +13,12 @@ spring:
     password: cos1234
   mvc:    view:      prefix: /template/
       suffix: .mustache
-  jpa:    hibernate:      ddl-auto: create #create update none
+  jpa:    hibernate:      ddl-auto: update #create update none
       naming:        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: true
+    
+  security:    oauth2:      client:        registration:          google:
+            client-id: clientId
+            client-secret: clientSecret
+            scope:            - email
+            - profile
