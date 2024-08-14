@@ -42,6 +42,9 @@ public class SecurityConfig /*extends WebSecurityConfigurerAdapter 구 버전에
 					// 성공 후 defaultSuccessUrl로 이동한다.
 					// 	> 여기서 defaultSuccessUrl은 호출한 페이지이다. /user로 호출하면 /user로 가고, /로 호출하면 /로 간다.
 		http.logout().permitAll();
+		
+		http.oauth2Login()
+			.loginPage("/loginForm");
 		return http.build();
 	}
 	
