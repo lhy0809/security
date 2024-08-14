@@ -18,10 +18,12 @@ public class PrincipalDetailsService implements UserDetailsService{
 	@Autowired
 	private UserRepository userRepository;
 	
-	// 시큐리티 session = Authentication Type = UserDetails Type
+	// (1) 시큐리티 session = Authentication Type = UserDetails Type
 	// UserDetails 타입인 PrincipalDetails(user) 가 리턴되면 
 	// Authentication(UserDetails) 가 되고
 	// 이게 시큐리티 session(내부 Authentication(내부 UserDetails)) 가 된다.
+	
+	// (2) @AuthenticationPrincipal 어노테이션이 생성된다.
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		System.out.println(username);
@@ -29,7 +31,7 @@ public class PrincipalDetailsService implements UserDetailsService{
 		if(user != null) {
 			return new PrincipalDetails(user);
 		}
-		return null; 
+		return null;
 	}
 
 }
