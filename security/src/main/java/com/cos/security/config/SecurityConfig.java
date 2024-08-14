@@ -24,15 +24,22 @@ public class SecurityConfig /*extends WebSecurityConfigurerAdapter 구 버전에
 		http.csrf(AbstractHttpConfigurer::disable);
 		http.authorizeRequests(authorize -> authorize
 				.requestMatchers(new AntPathRequestMatcher("/user/**")).authenticated() // /user > 인증 필요
-				.requestMatchers(new AntPathRequestMatcher("/manager/**")).hasAnyRole("MANAGER", "ADMIN") // /manager > MANAGER, ADMIN 권한 필요
-				.requestMatchers(new AntPathRequestMatcher("/admin/**")).hasRole("ADMIN") // /admin > ADMIN 권한 필요
+				.requestMatchers(new AntPathRequestMatcher("/manager/**")).hasAnyRole("MANAGER", "ADMIN") // /manager > ROLE_MANAGER, ROLE_ADMIN 권한 필요
+				.requestMatchers(new AntPathRequestMatcher("/admin/**")).hasRole("ADMIN") // /admin > ROLE_ADMIN 권한 필요
 				.anyRequest().permitAll() // 나머지 url > 권한 허용.
 				);
 
 		http.formLogin(form -> form
-				.loginPage("/loginForm"));
-		// /user /manager /admin 으로 접근 시 403 error 발생 
-		// 단, formLogin.loginPage 를 지정하면 권한이 필요한 url에 대해서 /login 으로 이동.
+				.loginPage("/loginForm")
+					// /user /manager /admin 으로 접근 시 403 error 발생 
+					// 단, formLogin.loginPage 를 지정하면 권한이 필요한 url에 대해서 /login 으로 이동.
+				.loginProcessingUrl("/login")
+				.defaultSuccessUrl("/"));
+					// login 주소가 호출이 되면 security가 가로채서 로그인을 진행한다.
+					// 	> controller에 /login api 를 만들지 않아도 된다.
+					// 성공 후 defaultSuccessUrl로 이동한다.
+					// 	> 여기서 defaultSuccessUrl은 호출한 페이지이다. /user로 호출하면 /user로 가고, /로 호출하면 /로 간다.
+		http.logout().permitAll();
 		return http.build();
 	}
 	
